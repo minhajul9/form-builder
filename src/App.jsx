@@ -1,5 +1,5 @@
+import { Outlet } from 'react-router-dom';
 import './App.css'
-import { FaPlus } from 'react-icons/fa';
 
 
 function App() {
@@ -9,6 +9,7 @@ function App() {
       <div className="navbar bg-slate-800 text-white">
         <a className="btn btn-ghost normal-case text-xl">Form Builder</a>
       </div>
+      <Outlet></Outlet>
       
     </div>
   )
