@@ -1,6 +1,7 @@
 import { FaPlus } from 'react-icons/fa';
 import { useForm } from 'react-hook-form';
 import { useLocation } from 'react-router-dom';
+import { useState } from 'react';
 
 
 const CreateNewForm = () => {
@@ -8,43 +9,72 @@ const CreateNewForm = () => {
     const location = useLocation();
     // console.log(location.state.name);
 
-    const formObject = {
+    const [formObject, setFormObject] = useState({
         name: location.state.name,
         fields: []
-    }
+    })
 
     const {
         register,
         handleSubmit,
         formState: { errors },
+        reset
     } = useForm();
 
     const addField = (data) => {
-        console.log(data);
+        formObject.fields.push(data);
+        reset();
+        document.getElementById('close').click();
     }
-
+    console.log(formObject.fields);
     return (
         <div>
             <div className='md:w-2/3 mx-auto'>
                 <h1 className='text-3xl font-bold text-center'>{formObject.name}</h1>
-        
+
+                <div className='md:w-1/2 mx-auto border mt-8 p-6 rounded-lg flex flex-col items-center'>
+                    {
+                        formObject.fields.map(field =>
+                            <input
+                                key={field.name}
+                                className='m-2 p-2 rounded w-full'
+                                type={field.type}
+                                placeholder={field.placeholder}
+                                name={field.name}
+                            />
+                        )
+                    }
+
+                    <button className="btn" onClick={() => window.my_modal_2.showModal()}><FaPlus></FaPlus> Add Field</button>
+                </div>
+
                 {/* Open the modal using ID.showModal() method */}
-                <button className="btn" onClick={() => window.my_modal_2.showModal()}><FaPlus></FaPlus> Add Field</button>
+
                 <dialog id="my_modal_2" className="modal">
                     <form onSubmit={handleSubmit(addField)} method="dialog" className="modal-box">
                         <h3 className="font-bold text-lg">Enter field information.</h3><br />
+                        
 
-                        <input className='m-2 p-2 rounded w-full' type="text" placeholder='Name' {...register('name', {required: true})} /> <br />
+                        <input className='m-2 p-2 rounded w-full' type="text" placeholder='Name' {...register('name', { required: true })} /> <br />
+                        <p className='text-red-700 ms-4'>{errors.name? "This field is required" : ''}</p>
 
-                        <input className='m-2 p-2 rounded w-full' type="text" placeholder='Placeholder' {...register('placeholder', {required: true})} /> <br />
+                        <input className='m-2 p-2 rounded w-full' type="text" placeholder='Placeholder' {...register('placeholder', { required: true })} /> <br />
+                        <p className='text-red-700 ms-4'>{errors.placeholder? "This field is required" : ''}</p>
 
-                        <input className='m-2 p-2 rounded w-full' type="type" placeholder='Type of data' {...register('type', {required: true})} /> <br />
+                        
+                        <select placeholder='Type of data' {...register('type', { required: true })} className='m-2 p-2 rounded w-full' >
+                            <option value=""></option>
+                            <option value="text">Text</option>
+                            <option value="email">Email</option>
+                            <option value="number">Number</option>
+                        </select> <br />
+                        <p className='text-red-700 ms-4'>{errors.type? "This field is required" : ''}</p>
 
                         <input className='btn btn-success m-2' type="submit" value="Add" />
-                        
+
                     </form>
                     <form method="dialog" className="modal-backdrop">
-                        <button>close</button>
+                        <button id='close'>close</button>
                     </form>
                 </dialog>
             </div>
