@@ -1,10 +1,13 @@
 import { FaPlus, FaTrashAlt } from 'react-icons/fa';
 import { useForm } from 'react-hook-form';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import Swal from 'sweetalert2';
 
 
 const CreateNewForm = () => {
+
+    const navigate = useNavigate();
 
     const location = useLocation();
     // console.log(location.state.name);
@@ -29,8 +32,46 @@ const CreateNewForm = () => {
 
     const removeField = name => {
         const newFields = formObject.fields.filter(field => field.name !== name)
-        const newForm = {name: formObject.name, fields: newFields}
+        const newForm = { name: formObject.name, fields: newFields }
         setFormObject(newForm)
+    }
+
+    const saveForm = () => {
+
+        console.log(formObject);
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You want to add this form",
+            icon: 'success',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, save it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch('http://localhost:5000/forms', {
+                    method: "POST",
+                    headers: {
+                        'content-type': 'application/json'
+                    },
+                    body: JSON.stringify(formObject)
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.insertedId) {
+                            Swal.fire(
+                                'Added!',
+                                'New Form added.',
+                                'success'
+                            )
+                           navigate('/')
+
+                        }
+                    })
+            }
+        })
+
+
     }
 
     return (
@@ -38,7 +79,7 @@ const CreateNewForm = () => {
             <div className='md:w-2/3 mx-auto'>
                 <h1 className='text-3xl font-bold text-center'>{formObject.name}</h1>
 
-                <div className='md:w-1/2 mx-auto border mt-8 p-6 rounded-lg flex flex-col items-center'>
+                <div className='md:w-2/3 mx-auto border mt-8 p-6 rounded-lg flex flex-col items-center'>
                     {
                         formObject.fields.map(field =>
                             <div key={field.name} className='flex items-center justify-around w-full'>
@@ -56,6 +97,10 @@ const CreateNewForm = () => {
                     }
 
                     <button className="btn" onClick={() => window.my_modal_2.showModal()}><FaPlus></FaPlus> Add Field</button>
+                </div>
+
+                <div className='md:w-1/2 mx-auto m-4 flex justify-end'>
+                    {formObject.fields.length ? <button onClick={saveForm} className='btn btn-success'>Save</button> : ''}
                 </div>
 
                 {/* Open the modal using ID.showModal() method */}

@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { FaPlus } from 'react-icons/fa';
 import Swal from 'sweetalert2'
 
