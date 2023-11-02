@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import { useLoaderData } from 'react-router-dom';
 
 const Submission = () => {
@@ -45,7 +45,7 @@ const Submission = () => {
                     <h3 className="font-bold text-lg">{modalData?.userName}</h3>
 
                     {
-                        Object.entries(modalData).map(([key, value]) => {
+                        modalData && Object.entries(modalData).map(([key, value]) => {
                             if (key !== '_id' && key !== 'userName') {
                                 return <p className='my-4' key={key}>{key + ": " + value}</p>
                 

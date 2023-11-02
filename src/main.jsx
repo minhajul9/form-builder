@@ -31,7 +31,7 @@ const router = createBrowserRouter([
       },
       {
         path: '/submissions/:formName',
-        loader: ({params}) => fetch(`http://localhost:5000/formSubmissions/${params.formName}`),
+        loader: ({params}) => fetch(`https://form-server-gamma.vercel.app/formSubmissions/${params.formName}`),
         element: <Submission></Submission>
       }
     ]

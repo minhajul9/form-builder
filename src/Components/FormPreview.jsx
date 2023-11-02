@@ -23,7 +23,7 @@ const FormPreview = () => {
         
         const info= {data, formName: form.name};
         console.log(info);
-        fetch('http://localhost:5000/submitInfo', {
+        fetch('https://form-server-gamma.vercel.app/submitInfo', {
             method: "POST",
             headers: {
                 'content-type' : 'application/json'
@@ -72,7 +72,7 @@ const FormPreview = () => {
                 </form>
             </div>
             {
-                user.uid === form.creator && <button onClick={() => navigate(`/submissions/${form.name.split(' ').join('')}`)}>See Submissions</button>
+                user.uid === form.creator && <button className='btn btn-primary my-4' onClick={() => navigate(`/submissions/${form.name.split(' ').join('')}`)}>See Submissions</button>
             }
         </div>
     );
