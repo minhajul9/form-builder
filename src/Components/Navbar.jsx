@@ -1,9 +1,12 @@
-import { FaUserCircle } from 'react-icons/fa';
+import { useContext } from 'react';
+import { FaGoogle, FaUserCircle } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
+import { AuthContext } from '../Provider/AuthProvider';
 const Navbar = () => {
 
+    const {user, googleSignIn, logOut} = useContext(AuthContext)
 
-
+    // console.log(user);
     const navItem = <>
         <li><Link>Products</Link></li>
         <li><Link>Template</Link></li>
@@ -11,6 +14,21 @@ const Navbar = () => {
         <li><Link>Resources</Link></li>
         <li><Link>Pricing</Link></li>
     </>
+
+    const handleGoogleLogin = () =>{
+        googleSignIn()
+        .then(result =>{
+            // console.log(result);
+        })
+    }
+
+    const handleLogOut = () =>{
+        logOut()
+        .then()
+        .catch(result => {
+            console.log(result);
+        })
+    }
 
     return (
         <div className="navbar bg-base-100">
@@ -31,7 +49,14 @@ const Navbar = () => {
                 </ul>
             </div>
             <div className="navbar-end text-2xl">
-                 <FaUserCircle></FaUserCircle>
+                 {
+                    user ? 
+                    <>
+                    <img className='w-16 rounded-full' src={user.photoURL}></img> 
+                    <button onClick={handleLogOut} className='btn btn-ghost text-xs'>Log Out</button>
+                    </>
+                    : <button onClick={handleGoogleLogin}><FaGoogle></FaGoogle></button>
+                 }
             </div>
         </div>
     );

@@ -8,12 +8,14 @@ import {
 } from "react-router-dom";
 import FormList from './Components/FormList.jsx';
 import CreateNewForm from './Components/CreateNewForm.jsx';
+import AuthProvider from './Provider/AuthProvider.jsx';
+import FormPreview from './Components/FormPreview.jsx';
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App></App>,
-    children:[
+    children: [
       {
         path: '/',
         element: <FormList></FormList>
@@ -21,6 +23,10 @@ const router = createBrowserRouter([
       {
         path: '/createForm',
         element: <CreateNewForm></CreateNewForm>
+      },
+      {
+        path: '/formPreview',
+        element: <FormPreview></FormPreview>
       }
     ]
   }
@@ -28,6 +34,8 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <RouterProvider router={router}></RouterProvider>
+    <AuthProvider>
+      <RouterProvider router={router}></RouterProvider>
+    </AuthProvider>
   </React.StrictMode>,
 )

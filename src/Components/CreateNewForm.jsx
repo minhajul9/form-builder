@@ -10,10 +10,11 @@ const CreateNewForm = () => {
     const navigate = useNavigate();
 
     const location = useLocation();
-    // console.log(location.state.name);
+    // console.log(location.state);
 
     const [formObject, setFormObject] = useState({
         name: location.state.name,
+        image: location.state.image,
         fields: []
     })
 
@@ -64,7 +65,7 @@ const CreateNewForm = () => {
                                 'New Form added.',
                                 'success'
                             )
-                           navigate('/')
+                            navigate('/')
 
                         }
                     })
@@ -77,7 +78,10 @@ const CreateNewForm = () => {
     return (
         <div>
             <div className='md:w-2/3 mx-auto'>
-                <h1 className='text-3xl font-bold text-center'>{formObject.name}</h1>
+                <div className='flex justify-center items-center gap-8'>
+                    <img className='w-24 rounded' src={formObject.image} />
+                    <h1 className='text-3xl font-bold text-center'>{formObject.name}</h1>
+                </div>
 
                 <div className='md:w-2/3 mx-auto border mt-8 p-6 rounded-lg flex flex-col items-center'>
                     {
