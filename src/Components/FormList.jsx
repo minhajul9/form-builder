@@ -12,7 +12,7 @@ const FormList = () => {
     const [forms, setForms] = useState([]);
 
     useEffect(() => {
-        fetch('http://localhost:5000/forms')
+        fetch('https://form-server-gamma.vercel.app/forms')
             .then(res => res.json())
             .then(data => setForms(data))
     }, [])
@@ -69,24 +69,26 @@ const FormList = () => {
                 const name = document.getElementById('name').value;
                 const image = document.getElementById('image').files[0];
 
-                if (!name ) {
+                if (!name) {
                     Swal.showValidationMessage('Please enter name of the form.');
                     return false;
                 }
 
-                try {
-                    const formData = new FormData();
-                    formData.append('image', image);
+                if (image) {
+                    try {
+                        const formData = new FormData();
+                        formData.append('image', image);
 
-                    const response = await axios.post(`https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_Image_Token}`, formData);
+                        const response = await axios.post(`https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_Image_Token}`, formData);
 
-                    if (response.data && response.data.data) {
-                        return { name, imageUrl: response.data.data.url };
-                    } else {
-                        throw new Error('Failed to upload image.');
+                        if (response.data && response.data.data) {
+                            return { name, imageUrl: response.data.data.url };
+                        } else {
+                            throw new Error('Failed to upload image.');
+                        }
+                    } catch (error) {
+                        Swal.showValidationMessage(`Upload failed: ${error}`);
                     }
-                } catch (error) {
-                    Swal.showValidationMessage(`Upload failed: ${error}`);
                 }
             }
         });
@@ -95,7 +97,7 @@ const FormList = () => {
 
             const { name, imageUrl } = formValues;
             navigate('/createForm', { state: { name, image: imageUrl } })
-            
+
             // Swal.fire({
             //     icon: 'success',
             //     title: 'Image uploaded!',

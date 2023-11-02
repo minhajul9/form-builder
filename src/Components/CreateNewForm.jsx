@@ -1,11 +1,14 @@
 import { FaPlus, FaTrashAlt } from 'react-icons/fa';
 import { useForm } from 'react-hook-form';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import Swal from 'sweetalert2';
+import { AuthContext } from '../Provider/AuthProvider';
 
 
 const CreateNewForm = () => {
+
+    const {user} = useContext(AuthContext)
 
     const navigate = useNavigate();
 
@@ -26,7 +29,32 @@ const CreateNewForm = () => {
     } = useForm();
 
     const addField = (data) => {
-        formObject.fields.push(data);
+
+        // console.log(data);
+        const fieldInfo = { name: data.name, placeholder: data.placeholder, type: data.type }
+
+        const image = data.image[0]
+        if (image) {
+            const formData = new FormData();
+            formData.append('image', image);
+
+            fetch(`https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_Image_Token}`, {
+                method: "POST",
+                body: formData
+            })
+                .then(res => res.json())
+                .then(imageResponse => {
+                    console.log(imageResponse);
+                    if (imageResponse.success) {
+                        fieldInfo.image = imageResponse.data.display_url
+                    }
+                })
+            // console.log(formData);
+
+        }
+
+
+        formObject.fields.push(fieldInfo);
         reset();
         document.getElementById('close').click();
     }
@@ -39,7 +67,9 @@ const CreateNewForm = () => {
 
     const saveForm = () => {
 
-        console.log(formObject);
+        // console.log(formObject);
+
+        formObject.creator = user.uid;
         Swal.fire({
             title: 'Are you sure?',
             text: "You want to add this form",
@@ -50,7 +80,7 @@ const CreateNewForm = () => {
             confirmButtonText: 'Yes, save it!'
         }).then((result) => {
             if (result.isConfirmed) {
-                fetch('http://localhost:5000/forms', {
+                fetch('https://form-server-gamma.vercel.app/forms', {
                     method: "POST",
                     headers: {
                         'content-type': 'application/json'
@@ -75,6 +105,7 @@ const CreateNewForm = () => {
 
     }
 
+    console.log('form object', formObject);
     return (
         <div>
             <div className='md:w-2/3 mx-auto'>
@@ -86,16 +117,21 @@ const CreateNewForm = () => {
                 <div className='md:w-2/3 mx-auto border mt-8 p-6 rounded-lg flex flex-col items-center'>
                     {
                         formObject.fields.map(field =>
-                            <div key={field.name} className='flex items-center justify-around w-full'>
-                                <input
-                                    className='m-2 p-2 rounded w-full'
-                                    type={field.type}
-                                    placeholder={field.placeholder}
-                                    name={field.name}
-                                />
-                                <button onClick={() => removeField(field.name)}>
-                                    <FaTrashAlt className='text-red-700'></FaTrashAlt>
-                                </button>
+                            <div key={field.name} className='flex flex-col items-center justify-around w-full my-8'>
+                                {
+                                    field.image && <img className='h-48' src={field.image}></img>
+                                }
+                                <div className='flex w-full'>
+                                    <input
+                                        className='m-2 p-2 rounded w-full'
+                                        type={field.type}
+                                        placeholder={field.placeholder}
+                                        name={field.name}
+                                    />
+                                    <button onClick={() => removeField(field.name)}>
+                                        <FaTrashAlt className='text-red-700'></FaTrashAlt>
+                                    </button>
+                                </div>
                             </div>
                         )
                     }
@@ -128,6 +164,8 @@ const CreateNewForm = () => {
                             <option value="number">Number</option>
                         </select> <br />
                         <p className='text-red-700 ms-4'>{errors.type ? "This field is required" : ''}</p>
+
+                        <input type="file" {...register('image')} className="file-input file-input-bordered w-full max-w-xs" />
 
                         <input className='btn btn-success m-2' type="submit" value="Add" />
 
