@@ -17,47 +17,7 @@ const FormList = () => {
             .then(data => setForms(data))
     }, [])
 
-    // console.log(forms);
-
-    // const createForm = () => {
-    //     Swal.fire({
-    //         title: 'Enter Form Name',
-    //         html: `<form>
-    //         <input type="text" id="formName" placeholder='Enter form Name' /> <br /><br />
-    //         <input type="file" id="logo"  />
-    //     </form>`,
-    //         showCancelButton: true,
-    //         confirmButtonText: 'Create',
-    //         showLoaderOnConfirm: true,
-    //         preConfirm: () => {
-    //             const formName = document.getElementById('formName');
-    //             const logo = document.getElementById('logo').files;
-    //             console.log(logo);
-
-    //             const formData = new FormData();
-    //             formData.append('image', logo)
-
-    //             fetch(`https://api.imgbb.com/1/upload?expiration=600&key=${import.meta.env.VITE_Image_Token}`, {
-    //                 method: "POST",
-    //                 body: formData,
-    //                 mode: 'no-cors'
-    //             })
-    //             .then(res => res.json())
-    //             .then(data =>{
-    //                 console.log(data);
-    //             })
-
-
-
-
-    //             // if (formName && logo) {
-    //             //     navigate('/createForm', { state: { name: formName, image: logo } })
-    //             // }
-    //         },
-    //         allowOutsideClick: () => !Swal.isLoading()
-    //     })
-    // }
-
+    
     const handleImageUpload = async () => {
         const { value: formValues } = await Swal.fire({
             title: 'Upload Image',
@@ -98,23 +58,16 @@ const FormList = () => {
             const { name, imageUrl } = formValues;
             navigate('/createForm', { state: { name, image: imageUrl } })
 
-            // Swal.fire({
-            //     icon: 'success',
-            //     title: 'Image uploaded!',
-            //     text: `Name: ${name}`,
-            //     imageUrl: imageUrl
-            //     // You can customize the success modal as needed
-            // });
         }
     };
 
 
     return (
-        <div className='mt-20 grid grid-cols-2 md:grid-cols-4'>
+        <div className='mt-20 grid grid-cols-2 md:grid-cols-4 gap-4'>
 
             {
                 forms.map(form =>
-                    <button onClick={() => {
+                    <button className='my-8' onClick={() => {
                         navigate('/formPreview', { state: { form } })
                     }} key={form._id} >
                         <div className='flex flex-col justify-center items-center h-56 w-56 rounded-md gap-6 text-2xl border bg-slate-700 text-white'>

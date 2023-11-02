@@ -18,6 +18,8 @@ const FormPreview = () => {
     } = useForm();
 
     const submitInfo = (data) => {
+
+        data.userName = user.displayName
         
         const info= {data, formName: form.name};
         console.log(info);
@@ -70,7 +72,7 @@ const FormPreview = () => {
                 </form>
             </div>
             {
-                user.uid === form.creator && <button onClick={() => navigate('/')}>See Submissions</button>
+                user.uid === form.creator && <button onClick={() => navigate(`/submissions/${form.name.split(' ').join('')}`)}>See Submissions</button>
             }
         </div>
     );
